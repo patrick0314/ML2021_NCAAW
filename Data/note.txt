@@ -1,0 +1,35 @@
+"2015_3106_3107 0.5" indicates that team 3106 play team 3107 in the 2015 season and predicts the probability that the team with lower ID beats the team with the higher ID
+
+stage1: predicted probabilities for every possible matchup in the past 5 NCAA tournaments
+stage2: predicted probabilities for every possible matchup before the 2021 tournament
+
+filename                         | items
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WTeam.csv                        | TeamID(4 digit number, 3000-3999) TeamName(compact spelling of the team's college name)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WSeasons.csv                     | Season(the yearin which the tournament was played), DayZero(DayNum=0 during that season), Region WXYZ(W-X, Y-Z)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WNCAATournamentSeeds.csv         | Season, Seed(3 character identifier, first is W/X/Y/Z, next two are the seed within the region), TeamID
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WRegularSeasonCompactResults.csv | Season, DayNum(0-132), WTeamID(winner team id), WScore(the points scored by the winner), LTeamID, LScore, NumOT, WLoc(H for home team and A for visiting team)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WNCAATourneyCompactResults.csv   | the same as WRegularSeasonCompactResults.csv but only record playoffs
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WRegularSeasonDetailedResults.csv | Season, DayNum, WTeamID, WScore, LTeamID, LScore, WLoc, NumOT, W/LFGM(field goals made), W/LFGA(field goals attempt), W/LFGM3(three point made), 
+                                 | W/LFGA3(three point attempt), W/LFTM(free throws made), W/LFTA(free throws attempt), W/LOR(offensive rebounds), W/LDR(defensive rebounds), W/LAst(assists), 
+                                 | W/LTO(turnovers), W/LStl(steals), W/LBlk(blocks), W/LPF(personal fouls commited)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WNCAATourneyDetailedResults.csv  | the same as WRegularSeasonDetailedResults.csv but only record playoffs
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Cities.csv                       | CityID(4 digit number uniquely identifying a city), City(text name of the city), State(the state abbreviation)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WGameCities.csv                  | Season, DayNum, WTeamID, LTeamID, CRType(Regular for regular season, NCAA for playoffs), CityID(where the game was played)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WTeamSpellings.csv               | TeamNameSpelling(all the name the team had been), TeamID
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WNCAATourneySlots.csv            | Slot(4 characters, first two means which round like R1/R2..., last two tell the expected seed like W1/WX/CH...), 
+                                 | StrongSeed(the team which will participate the slot game with better order), WeakSeed(the team which will participate the slot game with worse order)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Conferences.csv                  | ConfAbbrev(the conference abbreviation), description(longer text name for the conference)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WTeamConferences.csv             | Season, TeamID, ConfAbbrev
