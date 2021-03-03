@@ -1,5 +1,6 @@
 from ReadData import *
 import numpy as np
+import pandas as pd
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -36,4 +37,4 @@ for i in range(len(output['ID'])):
 
 output1 = Output()
 output1['Pred'] = output['Pred']
-output1.to_csv('output.csv', index=0)
+output1.to_csv('tradition.csv', index=0)
