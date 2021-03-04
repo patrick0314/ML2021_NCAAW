@@ -2,8 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import torch
-import torchvision.dataset
-import torchvision.transforms
+import torch.utils.data as Data
 import torch.nn.init
 
 from ReadData import *
@@ -34,39 +33,38 @@ for i in range(VS.shape[0]):
         if tmp != 0:
             VS[i, j] /= tmp
 
-sample = Output()
-pair = []
-for i in range(len(output['ID'])):
-    pair.append(output['ID'][i].split('_')[1], output['ID'][i].split('_')[2])
+#detailedresult = DetailedResult() # [630, 34] = [Season, DayNum, WTeamID, WScore, LTeamID, LScore, WLoc ... LOR, LDR, LAst, LTO, LStl, LBlk, LPF]
+#regulardetailedresult = RegularDetailedResult() # [56793, 34]] = [Season, DayNum, WTeamID, WScore, LTeamID, LScore, WLoc ... LOR, LDR, LAst, LTO, LStl, LBlk, LPF]
 
-label = []
+sample = Output()
+pair = [] # [10080, 2]
+for i in range(len(sample['ID'])):
+    lower_ID = int(sample['ID'][i].split('_')[1])
+    upper_ID = int(sample['ID'][i].split('_')[2])
+    pair.append([lower_ID, upper_ID])
+
+lable = [] # [10080, 1]
 for i in pair:
-    label.append(VS[i[0], i[1]])
+    tmp = team.index[team['TeamID']==i[0]].to_list()
+    tmp1 = team.index[team['TeamID']==i[1]].to_list()
+    lable.append(VS[tmp[0], tmp[0]])
+
+pair = torch.FloatTensor(pair)
+lable = torch.FloatTensor(lable)
 
 # Data Set
 print('=== data set ===')
-class Dataset(torch.utils.data.Dataset):
-    def __init__(self, pair, VS, mode='train'):
-        self.pair = pair
-
-    def __len__(self):
-        return len(self.pair)
-
-    def __getitem(self, pair, label):
-        
-        return (, y)
-
-training = Dataset(pair, label)
+dataset = Data.TensorDataset(pair, lable)
 
 # DataSet Loader
 print('=== dataset loader ===')
 data_loader = torch.utils.data.DataLoader(
-        dataset=training, 
+        dataset=dataset, 
         batch_size=100,
         shuffle=True,
-        drop_last=True
         )
 
+'''
 # CNN Model
 print('=== model build ===')
 class CNN(torch.nn.Module):
@@ -82,10 +80,11 @@ class CNN(torch.nn.Module):
         out = out.view(out.size(0), -1)
         out = self.fc(out)
         return out
+'''
 
 # parameters
 print('=== parameter setting ===')
-learning_rate = 0.001
+learning_rate = 0.0001
 tranining_epochs = 15
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -97,22 +96,22 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 # train my model
 print('=== laerning start ===')
-total_batch = len(data_loader)
+total_batch = len(data_loader) # 101
 for epoch in range(training_epochs):
     avg_cost = 0
 
-    for x, y in enumerate(data_loader):
+    for step, (x, y) in enumerate(data_loader):
         # label is not one-hot encoded
-        X = X.to(device)
-        Y = Y.to(device)
+        x = x.to(device)
+        y = y.to(device)
 
         optimizer.zero_grad()
         hypothesis = model(X)
-        cost = criterion(hypothesis, Y)
+        cost = criterion(hypothesis, y)
         cost.backward()
         optimizer.step()
 
-        avg_cost += cost / total_batch
+        avg_cost += (cost / total_batch)
 
     print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
 
