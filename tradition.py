@@ -9,22 +9,35 @@ n = len(team['TeamID'])
 VS = np.zeros((n, n)) # [369, 369], [i, j] record the winning probability for team i playing with team j
 
 compactresult = CompactResult() # [1386, 8] = [Season, DayNum, WteamID, LteamID, LScore, WLoc, NumOT]
-for i in range(len(compactresult['Season'])):
+for i in range(len(compactresult)):
     W = team.index[team['TeamID']==compactresult['WTeamID'][i]].to_list()
     L = team.index[team['TeamID']==compactresult['LTeamID'][i]].to_list()
     VS[W[0], L[0]] += 1
-
+'''
 regularcompactresult = RegularCompactResult() # [112183, 8] = [Season, DayNum, WteamID, WScore, LteamID, LScore, WLoc, NumOT]
-for i in range(len(regularcompactresult['Season'])):
+for i in range(len(regularcompactresult)):
     W = team.index[team['TeamID']==regularcompactresult['WTeamID'][i]].to_list()
     L = team.index[team['TeamID']==regularcompactresult['LTeamID'][i]].to_list()
     VS[W[0], L[0]] += 1
-
+'''
+detailedresult = DetailedResult()
+for i in range(len(detailedresult)):
+    W = team.index[team['TeamID']==detailedresult['WTeamID'][i]].to_list()
+    L = team.index[team['TeamID']==detailedresult['LTeamID'][i]].to_list()
+    VS[W[0], L[0]] += 1
+'''
+regulardetailedresult = RegularDetailedResult()
+for i in range(len(regulardetailedresult)):
+    W = team.index[team['TeamID']==regulardetailedresult['WTeamID'][i]].to_list()
+    L = team.index[team['TeamID']==regulardetailedresult['LTeamID'][i]].to_list()
+    VS[W[0], L[0]] += 1
+'''
 for i in range(VS.shape[0]):
-    for j in range(VS.shape[1]):
+    for j in range(i+1, VS.shape[1]):
         tmp = VS[i, j] + VS[j, i]
         if tmp != 0:
             VS[i, j] /= tmp
+            VS[j, i] /= tmp
 
 output = Output()
 for i in range(len(output['ID'])):
