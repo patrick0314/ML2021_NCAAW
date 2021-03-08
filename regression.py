@@ -38,15 +38,15 @@ y = lable
 print('=== parameter setting ===')
 w = np.zeros(len(x[0]))
 lr = 1
-iteration = 10000
+iteration = 1000
 s_grad = np.zeros(len(x[0]))
 x_t = x.transpose()
 
 # linear regression training
 print('=== start regression ===')
 for i in range(iteration):
-    if i % 100 == 0:
-        print('iteration: ', i, '  ', w)
+    if i % 100 == 99:
+        print('iteration: ', i+1, '  ', w)
     pred = np.dot(x, w)
     loss = pred - y
     grad = 2 * np.dot(x_t, loss)
@@ -70,6 +70,8 @@ for i in range(len(output)):
     pred = np.dot(x, w)
     output[i][1] = pred
 
+# save file
+print('=== save file ===')
 df = pd.DataFrame(output, columns=['ID', 'Pred'])
 df.to_csv('regression.csv', index=0)
 
