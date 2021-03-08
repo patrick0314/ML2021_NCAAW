@@ -1,6 +1,9 @@
 import os
 import numpy as np
 import pandas as pd
+import torch
+import torch.utils.data as Data
+import torch.nn as nn
 
 from ReadData import *
 
@@ -30,54 +33,58 @@ for i in range(len(result)):
 lable = result[:, 4] # [170992]
 result = np.delete(result, 4, axis=1)
 
-# 
 x = result
 print('x: ', np.shape(x))
 y = lable
 print('y: ', np.shape(y))
 
-# parameter
-print('=== parameter setting ===')
-w = np.zeros(len(x[0]))
-lr = 1
-iteration = 1000
-s_grad = np.zeros(len(x[0]))
-x_t = x.transpose()
+# dataset dataloader
+x = torch.from_numpy(x)
+y = torch.from_numpy(y)
+dataset = Data.TensorDataset(x, y)
+dataloader = Data.DataLoader(dataset, batch_size=256)
 
-# linear regression training
-print('=== start regression ===')
-for i in range(iteration):
-    if i % 100 == 99:
-        print('iteration: ', i+1, '  ', w)
-    pred = np.dot(x, w)
-    loss = pred - y
-    grad = 2 * np.dot(x_t, loss)
-    s_grad += grad**2
-    ada = np.sqrt(s_grad)
-    w = w - lr * grad / ada
+# model build
+class CNN(nn.Module):
+    def __init__(self):
+        super(Classifier, self).__init__()
+        self.cnn = nn.Sequential(
 
-print('=== regression complete ===')
+                )
+        self.fc = nn.Sequential(
 
-# test
-print('=== start prediction ===')
-output = Output()
-output = output
-output = output.to_numpy()
+                )
 
-for i in range(len(output)):
-    S = int(output[i][0][0:4])
-    W = int(output[i][0][5:9])
-    L = int(output[i][0][10:])
-    x = np.array([S, W, L, 1.0])
-    pred = np.dot(x, w)
-    if pred >= 0.9:
-        output[i][1] = 1
-    elif pred >= 0.7:
-        output[i][1] = pred
-    else:
-        output[i][1] = 0
+    def forward(self, x):
+        out = self.cnn(x)
+        out = out.view(out.size()[0], -1)
+        return self.fc(out)
 
-# save file
-print('=== save file ===')
-df = pd.DataFrame(output, columns=['ID', 'Pred'])
-df.to_csv('regression.csv', index=0)
+# parameter setting
+learning_rate = 0.1
+epochs = 1000
+best = 0.0
+
+model = CNN().cuda()
+loss = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+# training
+print('=== start training ===')
+for epoch in range(epochs):
+    acc = 0.0
+
+    model.train()
+    for i, (x, y) in enumerate(dataloader):
+        pred = model(x.cuda())
+        batch_loss = loss(pred, y.cuda())
+        batch_loss.backward()
+        optimizer.step()
+
+        acc += np.sum(np.argmax(train_pred.cpu().data.numpy(), axis=1) == y.numpy())
+
+    acc = acc / len(dataloader)
+    if acc > best:
+        torch.save(model.state_dict(), 'model/model.pth')
+        best = acc
+        print('model save')
