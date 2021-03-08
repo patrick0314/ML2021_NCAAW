@@ -8,7 +8,7 @@ import torch.nn as nn
 from ReadData import *
 
 # Data Preprocess
-print('=== data process ===')
+print('=== data pre-process ===')
 compactresult = CompactResult() # [1386, 8]
 detailedresult = DetailedResult() # [630, 34] = [Season, DayNum, WTeamID, WScore, LTeamID, LScore, WLoc ... LOR, LDR, LAst, LTO, LStl, LBlk, LPF]
 regularcompactresult = RegularCompactResult() # [112183, 8]
@@ -18,20 +18,20 @@ tmp = tmp.drop(['DayNum', 'WScore', 'LScore', 'NumOT', 'WLoc'], axis=1)
 tmp1 = pd.concat([detailedresult, regulardetailedresult], axis=0, ignore_index=True) # [57423, 34]
 tmp1 = tmp1.drop(['DayNum', 'WScore', 'LScore', 'NumOT', 'WLoc', 'WFGM', 'WFGA', 'WFGM3', 'WFGA3', 'WFTM', 'WFTA', 'WOR', 'WDR', 'WAst', 'WTO', 'WStl', 'WBlk', 'WPF'], axis=1)
 tmp1 = tmp1.drop(['LFGM', 'LFGA',  'LFGA', 'LFGM3', 'LFGA3', 'LFTM', 'LFTA', 'LOR', 'LDR', 'LAst', 'LTO', 'LStl', 'LBlk', 'LPF'], axis=1)
-detail = pd.concat([tmp, tmp1], axis=0, ignore_index=True)
-detail = detail.to_numpy()
-detail = detail.astype(float) # [170992, 3]
-detail = np.concatenate((detail, np.ones((detail.shape[0], 1))), axis=1) # add bias [170992, 4]
+result = pd.concat([tmp, tmp1], axis=0, ignore_index=True)
+result = result.to_numpy()
+result = result.astype(float) # [170992, 3]
+result = np.concatenate((result, np.ones((result.shape[0], 1))), axis=1) # add bias [170992, 4]
 
-lable = np.zeros(len(detail)) # [170992, 1]
-for i in range(len(detail)):
-    if int(detail[i, 1] ) < int(detail[i, 2]):
+lable = np.zeros(len(result)) # [170992, 1]
+for i in range(len(result)):
+    if int(result[i, 1] ) < int(result[i, 2]):
         lable[i] = 1
     else:
         lable[i] = 0
 
 # 
-x = detail
+x = result
 y = lable
 
 # parameter
@@ -74,4 +74,3 @@ for i in range(len(output)):
 print('=== save file ===')
 df = pd.DataFrame(output, columns=['ID', 'Pred'])
 df.to_csv('regression.csv', index=0)
-
