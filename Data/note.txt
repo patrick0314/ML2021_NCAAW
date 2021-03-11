@@ -33,3 +33,7 @@ WNCAATourneySlots.csv            | Slot(4 characters, first two means which roun
 Conferences.csv                  | ConfAbbrev(the conference abbreviation), description(longer text name for the conference)
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WTeamConferences.csv             | Season, TeamID, ConfAbbrev
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+538ratingsWomen.csv              | Season, TeamID, TeamName, 538rating(538 is a great tool to track NCAA March Madness). https://www.kaggle.com/raddar/ncaa-women-538-team-ratings
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+

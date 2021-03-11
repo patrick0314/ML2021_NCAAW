@@ -47,7 +47,7 @@ dataloader = Data.DataLoader(dataset, batch_size=256)
 # model build
 class CNN(nn.Module):
     def __init__(self):
-        super(Classifier, self).__init__()
+        super(CNN, self).__init__()
         self.cnn = nn.Sequential(
 
                 )

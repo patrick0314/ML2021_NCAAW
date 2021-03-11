@@ -69,5 +69,23 @@ def TeamSpelling():
 
 def Output():
     Output = pd.read_csv(prefix + 'WSampleSubmissionStage1.csv')
-    #print(Oupput, end='\n\n')
+    #print(Output, end='\n\n')
     return Output
+
+def Rating():
+    rating = pd.read_csv(prefix + '538ratingsWomen.csv')
+    #print(rating, end='\n\n')
+    rate = []
+    for i in range(len(rating)):
+        change = False
+        for j in range(len(rate)):
+            if rating['TeamID'][i] == rate[j][0]:
+                rate[j][1] == rating['538rating'][i]
+                change = True
+        if not change:
+            rate.append([rating['TeamID'][i], rating['538rating'][i]])
+
+    rate.sort()
+    df = pd.DataFrame(rate, columns=['TeamID', 'Rating'])
+    #print(df)
+    return df
